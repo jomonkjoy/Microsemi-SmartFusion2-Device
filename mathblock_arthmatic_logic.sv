@@ -17,6 +17,8 @@ module int_mul_add #(
   parameter O_DATA_WIDTH = 44
 ) (
   input  logic clk,
+  input  logic reset,
+  input  logic en,
   input  logic [I_DATA_WIDTH-1:0] a,
   input  logic [I_DATA_WIDTH-1:0] b,
   input  logic [I_DATA_WIDTH-1:0] c,
@@ -27,13 +29,88 @@ module int_mul_add #(
   logic signed [I_DATA_WIDTH-1:0] a_reg;
   logic signed [I_DATA_WIDTH-1:0] b_reg;
   logic signed [I_DATA_WIDTH-1:0] c_reg;
+  logic signed [I_DATA_WIDTH-1:0] p_reg;
   logic c_in_reg;
   always_ff @(posedge clk) begin
-    a_reg <= a;
-    b_reg <= b;
-    c_reg <= c;
-    c_in_reg <= c_in;
-    p <= (a_reg * b_reg) + c_reg + c_in_reg;
+    if (reset) begin
+      a_reg <= {I_DATA_WIDTH{1'b0}};
+      b_reg <= {I_DATA_WIDTH{1'b0}};
+      c_reg <= {I_DATA_WIDTH{1'b0}};
+      c_in_reg <= 1'b0;
+    end else begin
+      a_reg <= a;
+      b_reg <= b;
+      c_reg <= c;
+      c_in_reg <= c_in;
+    end
   end
+  always_ff @(posedge clk) begin
+    if (reset) begin
+      p_reg <= {O_DATA_WIDTH{1'b0}};
+    end else if (en) begin
+      p_reg <= (a_reg * b_reg) + c_reg + c_in_reg;
+    end
+  end
+  assign p = p_reg;
 
 endmodule
+
+module int_signed_mul #(
+  parameter I_DATA_WIDTH = 18
+  parameter O_DATA_WIDTH = 41
+) (
+  input  logic clk,
+  input  logic reset,
+  input  logic [I_DATA_WIDTH-1:0] a,
+  input  logic [I_DATA_WIDTH-1:0] b,
+  output logic [O_DATA_WIDTH-1:0] p
+);
+  
+  logic signed [I_DATA_WIDTH-1:0] a_reg;
+  logic signed [I_DATA_WIDTH-1:0] b_reg;
+  logic signed [O_DATA_WIDTH-1:0] p_reg;
+  always_ff @(posedge clk) begin
+    if (reset) begin
+      a_reg <= {I_DATA_WIDTH{1'b0}};
+      a_reg <= {I_DATA_WIDTH{1'b0}};
+      p_reg <= {O_DATA_WIDTH{1'b0}};
+    end else begin
+      a_reg <= a;
+      b_reg <= b;
+      p_reg <= (a_reg * b_reg);
+    end
+  end
+  assign p = p_reg;
+
+endmodule
+
+
+module int_unsigned_mul #(
+  parameter I_DATA_WIDTH = 17
+  parameter O_DATA_WIDTH = 34
+) (
+  input  logic clk,
+  input  logic reset,
+  input  logic [I_DATA_WIDTH-1:0] a,
+  input  logic [I_DATA_WIDTH-1:0] b,
+  output logic [O_DATA_WIDTH-1:0] p
+);
+  
+  logic unsigned [I_DATA_WIDTH-1:0] a_reg;
+  logic unsigned [I_DATA_WIDTH-1:0] b_reg;
+  logic unsigned [O_DATA_WIDTH-1:0] p_reg;
+  always_ff @(posedge clk) begin
+    if (reset) begin
+      a_reg <= {I_DATA_WIDTH{1'b0}};
+      a_reg <= {I_DATA_WIDTH{1'b0}};
+      p_reg <= {O_DATA_WIDTH{1'b0}};
+    end else begin
+      a_reg <= a;
+      b_reg <= b;
+      p_reg <= (a_reg * b_reg);
+    end
+  end
+  assign p = p_reg;
+
+endmodule
+
