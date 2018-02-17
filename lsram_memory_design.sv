@@ -1,5 +1,11 @@
 // Each LSRAM block can store up to 18,432 bits of data and can be configured in any of the following
 // depth x width combinations: 512 x 36, 512 x 32, 1k x 18, 1k x 16, 2k x 9, 2k x 8, 4k x 4, 8k x 2, or 16k x 1.
+// Each LSRAM block contains two independent data ports—Port A and Port B.
+// Supports maximum frequency up to 400 MHz.
+// An optional pipeline register is available at the read data port to improve the clock-to-out delay.
+// LSRAM can be operated in two memory modes: Dual-port mode,Two-port mode
+// Read from both ports at the same location is allowed.
+// Read and write on the same location at the same time is not allowed. There is no built in collision prevention or detection circuit in LSRAM.
 package LSRAM_package;
   
   typedef enum {
