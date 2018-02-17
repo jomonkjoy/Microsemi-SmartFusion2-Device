@@ -49,7 +49,7 @@ package USRAM_package;
 endpackage
 
 module USRAM_RAM1KX1_triport_mode #(
-  parameter USRAM_package::mode_type mode = 16Kx1,
+  parameter USRAM_package::mode_type mode = 64x18,
   parameter int DATA_WIDTH = USRAM_package::data_width_fn(mode),
   parameter int ADDR_WIDTH = USRAM_package::addr_width_fn(mode)
   ) (
