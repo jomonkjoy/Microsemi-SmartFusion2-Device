@@ -7,40 +7,40 @@
 package USRAM_package;
   
   typedef enum {
-    1Kx1,
-    512x2,
-    256x4,
-    128x9,
-    128x8,
-    64x18,
-    64x16
+    RAM1Kx1,
+    RAM512x2,
+    RAM256x4,
+    RAM128x9,
+    RAM128x8,
+    RAM64x18,
+    RAM64x16
   } mode_type;
   
-  function int addr_width_fn (input mode_type mode);
-    int i = 0;
+  function automatic addr_depth_fn (input mode_type mode);
+    int i;
     unique case (mode)
-      1Kx1    : i = 1024;
-      512x2   : i = 512;
-      256x4   : i = 256;
-      128x9   : i = 128;
-      128x8   : i = 128;
-      64x18   : i = 64;
-      64x16   : i = 64;
+      RAM1Kx1    : i = 1024;
+      RAM512x2   : i = 512;
+      RAM256x4   : i = 256;
+      RAM128x9   : i = 128;
+      RAM128x8   : i = 128;
+      RAM64x18   : i = 64;
+      RAM64x16   : i = 64;
       default : i = 128;
     endcase
-    return $clog2(i);
+    return i;
   endfunction
   
-  function int data_width_fn (input mode_type mode);
-    int i = 0;
+  function automatic data_width_fn (input mode_type mode);
+    int i;
     unique case (mode)
-      1Kx1    : i = 1;
-      512x2   : i = 2;
-      256x4   : i = 4;
-      128x9   : i = 9;
-      128x8   : i = 8;
-      64x18   : i = 18;
-      64x16   : i = 16;
+      RAM1Kx1    : i = 1;
+      RAM512x2   : i = 2;
+      RAM256x4   : i = 4;
+      RAM128x9   : i = 9;
+      RAM128x8   : i = 8;
+      RAM64x18   : i = 18;
+      RAM64x16   : i = 16;
       default : i = 9;
     endcase
     return i;
@@ -48,10 +48,12 @@ package USRAM_package;
   
 endpackage
 
+import LSRAM_package::*;
 module USRAM_RAM1KX1_triport_mode #(
-  parameter USRAM_package::mode_type mode = 64x18,
+  parameter USRAM_package::mode_type mode = RAM64x18,
   parameter int DATA_WIDTH = USRAM_package::data_width_fn(mode),
-  parameter int ADDR_WIDTH = USRAM_package::addr_width_fn(mode)
+  parameter int ADDR_DEPTH = LSRAM_package::addr_depth_fn(mode),
+  parameter int ADDR_WIDTH = $clog2(ADDR_DEPTH)
   ) (
   input  logic aclk,
   input  logic awe,
