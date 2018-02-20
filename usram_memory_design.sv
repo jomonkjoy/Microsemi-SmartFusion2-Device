@@ -48,11 +48,11 @@ package USRAM_package;
   
 endpackage
 
-import LSRAM_package::*;
+import USRAM_package::*;
 module USRAM_RAM1KX1_triport_mode #(
   parameter USRAM_package::mode_type mode = RAM64x18,
   parameter int DATA_WIDTH = USRAM_package::data_width_fn(mode),
-  parameter int ADDR_DEPTH = LSRAM_package::addr_depth_fn(mode),
+  parameter int ADDR_DEPTH = USRAM_package::addr_depth_fn(mode),
   parameter int ADDR_WIDTH = $clog2(ADDR_DEPTH)
   ) (
   input  logic aclk,
