@@ -9,43 +9,43 @@
 package LSRAM_package;
   
   typedef enum {
-    16Kx1,
-    8Kx2,
-    4Kx4,
-    2Kx9,
-    2Kx8,
-    1Kx18,
-    1Kx16,
-    512x36,
-    512x32
+    RAM16Kx1,
+    RAM8Kx2,
+    RAM4Kx4,
+    RAM2Kx9,
+    RAM2Kx8,
+    RAM1Kx18,
+    RAM1Kx16,
+    RAM512x36,
+    RAM512x32
   } mode_type;
   
-  function int addr_width_fn (input mode_type mode);
-    int i = 0;
+  function automatic addr_depth_fn (input mode_type mode);
+    int i;
     unique case (mode)
-      16Kx1   : i = 16*1024;
-      8Kx2    : i = 8*1024;
-      4Kx4    : i = 4*1024;
-      2Kx9    : i = 2*1024;
-      2Kx8    : i = 2*1024;
-      1Kx18   : i = 1*1024;
-      1Kx16   : i = 1*1024;
+      RAM16Kx1   : i = 16*1024;
+      RAM8Kx2    : i = 8*1024;
+      RAM4Kx4    : i = 4*1024;
+      RAM2Kx9    : i = 2*1024;
+      RAM2Kx8    : i = 2*1024;
+      RAM1Kx18   : i = 1*1024;
+      RAM1Kx16   : i = 1*1024;
       default : i = 512;
     endcase
-    return $clog2(i);
+    return i;
   endfunction
   
-  function int data_width_fn (input mode_type mode);
-    int i = 0;
+  function automatic data_width_fn (input mode_type mode);
+    int i;
     unique case (mode)
-      16Kx1   : i = 1;
-      8Kx2    : i = 2;
-      4Kx4    : i = 4;
-      2Kx9    : i = 9;
-      2Kx8    : i = 8;
-      1Kx18   : i = 18;
-      512x36  : i = 36;
-      512x32  : i = 32;
+      RAM16Kx1   : i = 1;
+      RAM8Kx2    : i = 2;
+      RAM4Kx4    : i = 4;
+      RAM2Kx9    : i = 9;
+      RAM2Kx8    : i = 8;
+      RAM1Kx18   : i = 18;
+      RAM512x36  : i = 36;
+      RAM512x32  : i = 32;
       default : i = 18;
     endcase
     return i;
@@ -53,10 +53,12 @@ package LSRAM_package;
   
 endpackage
 // Dual-port mode : 1k x 18, 1k x 16, 2k x 9, 2k x 8, 4k x 4, 8k x 2, or 16k x 1.
+import LSRAM_package::*;
 module LSRAM_RAM1KX18_dualport_mode #(
-  parameter LSRAM_package::mode_type mode = 16Kx1,
+  parameter LSRAM_package::mode_type mode = RAM16Kx1,
   parameter int DATA_WIDTH = LSRAM_package::data_width_fn(mode),
-  parameter int ADDR_WIDTH = LSRAM_package::addr_width_fn(mode)
+  parameter int ADDR_DEPTH = LSRAM_package::addr_depth_fn(mode),
+  parameter int ADDR_WIDTH = $clog2(ADDR_DEPTH)
   ) (
   input  logic aclk,
   input  logic awe, // 0/1 = Read/Write
@@ -90,10 +92,12 @@ module LSRAM_RAM1KX18_dualport_mode #(
   
 endmodule
 // Two-port mode : 512 x 36, 512 x 32, 1k x 18, 1k x 16, 2k x 9, 2k x 8, 4k x 4, 8k x 2, or 16k x 1.
+import LSRAM_package::*;
 module LSRAM_RAM1KX18_twoport_mode #(
-  parameter LSRAM_package::mode_type mode = 16Kx1,
+  parameter LSRAM_package::mode_type mode = RAM16Kx1,
   parameter int DATA_WIDTH = LSRAM_package::data_width_fn(mode),
-  parameter int ADDR_WIDTH = LSRAM_package::addr_width_fn(mode)
+  parameter int ADDR_DEPTH = LSRAM_package::addr_depth_fn(mode),
+  parameter int ADDR_WIDTH = $clog2(ADDR_DEPTH)
   ) (
   input  logic aclk,
   input  logic awe, // 0/1 = Read/Write
